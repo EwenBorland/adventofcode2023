@@ -7,7 +7,7 @@ import (
 	"fmt"
 )
 
-const currentDay int = 2
+const currentDay int = 3
 
 var dayFunctions map[int]func() string = map[int]func() string{
 	1: day_1.ParseSolution,
