@@ -1,4 +1,4 @@
-package main
+package day_2
 
 import (
 	"bufio"
@@ -9,11 +9,16 @@ import (
 	"strings"
 )
 
-func main() {
+func ParseSolution() string {
+	validCount, powerCount  := day_2()
+	return fmt.Sprintf("Valid Sum: %v\nPower Sum: %v\n", validCount, powerCount)
+}
+
+func day_2() (int, int) {
 	f, err := os.Open("day_2/input.txt")
 	if err != nil{
 		fmt.Println("file broke")
-		return
+		return 0, 0
 	}
 	defer f.Close()
 
@@ -71,6 +76,6 @@ func main() {
 		gameID++
 	}
 
-	fmt.Printf("Valid Sum: %v\n", validCount)
-	fmt.Printf("Power Sum: %v\n", powerCount)
+	return validCount, powerCount
+
 }

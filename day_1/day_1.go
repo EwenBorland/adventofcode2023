@@ -1,4 +1,4 @@
-package main
+package day_1
 
 import (
 	"bufio"
@@ -19,11 +19,17 @@ var nums = map[string]string{
 // 	"one":1,"two":2,"three":3,"four":4,"five":5,"six":6,"seven":7,"eight":8,"nine":9,
 // }
 
-func main() {
+func ParseSolution() string {
+	count := day_1()
+	return fmt.Sprintf("Count: %v",count)
+}
+
+
+func day_1() int{
 	f, err := os.Open("day_1/input.txt")
 	if err != nil{
 		fmt.Println("file broke")
-		return
+		return 0
 	}
 	defer f.Close()
 
@@ -53,6 +59,5 @@ func main() {
 		count += valueInt 
 	}
 	
-
-	println(count)
+	return count
 }
