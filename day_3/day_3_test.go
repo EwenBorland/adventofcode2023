@@ -19,3 +19,25 @@ func Test_Day_3(t *testing.T) {
 		t.Errorf("Day(3) fault, want: %v, got: %v", test_answer, output)
 	}
 }
+
+
+
+func TestIsSymbolOrPart(t *testing.T){
+
+	testCases := []struct{input rune; isSymbol bool; isPart bool}{
+		{'1',false, true},
+		{'c',true, false},
+		{'.',false, false},
+		{'$',true, false},
+		{' ',false, false},
+		{'%',true, false},
+
+	}
+	for _, tc := range testCases{
+		isSymbol, isPart := day_3.IsSymbolOrPart(tc.input)
+		if isSymbol != tc.isSymbol || isPart != tc.isPart{
+			t.Errorf("TestIsSymbolOrPart: Incorrect response for '%c', expected (%v, %v), got (%v, %v)", tc.input, tc.isSymbol, tc.isPart, isSymbol, isPart)
+		}
+	} 
+	
+}
