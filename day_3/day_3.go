@@ -43,41 +43,94 @@ for each line, if there's a number, store it in a list with the line num and all
 
 
 
-type part struct {
-	line int
-	value string
-	indices []int
+type Part struct {
+	Line int
+	Value string
+	Indices []int
 }
 
-var intsAsRunes []rune = []rune{'1','2'}
+var intsAsRunes []rune = []rune{'1','2','3','4','5','6','7','8','9','0'}
 
 //IsSymbolOrPart returns (c==Symbol, c==Part)
 func IsSymbolOrPart(c rune) (bool,bool) {
+	
 	if c == '.' || c == ' '{
+		fmt.Printf("IsSymbolOrPart| '%c' identified as neither\n", c)
 		return false, false
 	}
 	if slices.Contains(intsAsRunes, c) {
+		fmt.Printf("IsSymbolOrPart| '%c' identified as Part\n", c)
 		return false, true
 	}
+	fmt.Printf("IsSymbolOrPart| '%c' identified as Symbol\n", c)
 	return true, false
 }
 
-// func parseLine(line string, parts []part, validIndices map[int][]int) error{
-// 	for i, char := range line{
+func ParseLine(line string, lineNumber int, parts *[]Part, validIndices *map[int][]int){
+	evaluatingPart := false
+	for i, char := range line{
+		isSymbol, isPart := IsSymbolOrPart(char)
+		if isSymbol{
+			evaluatingPart = false
+			EvaluateSymbol(i, lineNumber, validIndices)
+		} else if isPart{
+			if evaluatingPart{
+				continue
+			}
+			evaluatingPart = true
+			EvaluatePart(i, lineNumber, line, parts)
+		} else {
+			evaluatingPart = false
+		}
 
-// 	}
-// }
+	}
+}
+
+func EvaluateSymbol(x, y int, validIndices *map[int][]int){
+	minY := max(0,y-1)
+	maxY := y+1
+	minX := max(0,x-1)
+	maxX := x+1
+	for ln := minY; ln <= maxY; ln++{
+		for index := minX; index <= maxX; index++{
+			if !slices.Contains((*validIndices)[ln],index){
+				(*validIndices)[ln] = append((*validIndices)[ln], index)
+			}
+		}
+
+	}
+}
+
+func EvaluatePart(x, y int, line string, parts *[]Part){
+	p := Part{
+		Line: y,
+		Value: "",
+		Indices: []int{x},
+	}
+	x++
+	for _, char := range line[x:]{
+		_, isPart := IsSymbolOrPart(char)
+		if !isPart{
+			break
+		}
+		p.Indices = append(p.Indices, x)
+		x++
+	}
+	p.Value = line[p.Indices[0]:p.Indices[len(p.Indices)-1]+1]
+	*parts = append(*parts, p)
+}
 
 
 func Day_3(scanner *bufio.Scanner) (int) {
-	setup := false
+	lineN := 0
+	parts := []Part{}
+	validMap := map[int][]int{}
 	for scanner.Scan() {
 		line := scanner.Text()
 		fmt.Println(line)
-		if !setup{
-			setup = true
-			
-		}
+		ParseLine(line,lineN,&parts,&validMap)
+
+		lineN++
 
 	}
 
