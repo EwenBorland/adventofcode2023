@@ -3,8 +3,10 @@ package day_3
 import (
 	"bufio"
 	"fmt"
+	"log"
 	"os"
 	"slices"
+	"strconv"
 )
 
 func ParseSolution() string {
@@ -18,7 +20,7 @@ func ParseSolution() string {
 	scanner := bufio.NewScanner(f)
 	validCount := Day_3(scanner)
 	
-	return fmt.Sprintf("Valid Sum: %v\n", validCount, )
+	return fmt.Sprintf("Valid Sum: %v\n", validCount )
 }
 
 
@@ -49,25 +51,32 @@ type Part struct {
 	Indices []int
 }
 
+type Symbol struct {
+	Line int
+	Index int
+	Value rune
+}
+
 var intsAsRunes []rune = []rune{'1','2','3','4','5','6','7','8','9','0'}
 
 //IsSymbolOrPart returns (c==Symbol, c==Part)
 func IsSymbolOrPart(c rune) (bool,bool) {
 	
 	if c == '.' || c == ' '{
-		fmt.Printf("IsSymbolOrPart| '%c' identified as neither\n", c)
+		// fmt.Printf("IsSymbolOrPart| '%c' identified as neither\n", c)
 		return false, false
 	}
 	if slices.Contains(intsAsRunes, c) {
-		fmt.Printf("IsSymbolOrPart| '%c' identified as Part\n", c)
+		// fmt.Printf("IsSymbolOrPart| '%c' identified as Part\n", c)
 		return false, true
 	}
-	fmt.Printf("IsSymbolOrPart| '%c' identified as Symbol\n", c)
+	// fmt.Printf("IsSymbolOrPart| '%c' identified as Symbol\n", c)
 	return true, false
 }
 
 func ParseLine(line string, lineNumber int, parts *[]Part, validIndices *map[int][]int){
 	evaluatingPart := false
+	fmt.Printf("Parsing line {%v}: '%v'", lineNumber, line)
 	for i, char := range line{
 		isSymbol, isPart := IsSymbolOrPart(char)
 		if isSymbol{
@@ -120,20 +129,43 @@ func EvaluatePart(x, y int, line string, parts *[]Part){
 	*parts = append(*parts, p)
 }
 
+func IsPartValid(p Part, v map[int][]int) bool{
+	fmt.Printf("Is part indices:[%v] in map indices:[%v]? ", p.Indices, v[p.Line])
+	for _, ind := range p.Indices{
+		if slices.Contains(v[p.Line],ind){
+			fmt.Println("yes")
+			return true
+		}
+	}
+	fmt.Println("no")
+	return false
+}
+
 
 func Day_3(scanner *bufio.Scanner) (int) {
 	lineN := 0
 	parts := []Part{}
 	validMap := map[int][]int{}
+
 	for scanner.Scan() {
 		line := scanner.Text()
 		fmt.Println(line)
 		ParseLine(line,lineN,&parts,&validMap)
 
 		lineN++
-
+	}
+	fmt.Printf("Found %v parts", len(parts))
+	partSum := 0
+	for _, p := range parts{
+		if IsPartValid(p, validMap){
+			pValueInt, err := strconv.Atoi(p.Value)
+			if err != nil{
+				log.Fatal(err)
+			}
+			partSum += pValueInt
+		}
 	}
 
-	return 0
+	return partSum
 
 }
