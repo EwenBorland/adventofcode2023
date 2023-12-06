@@ -8,20 +8,24 @@ import (
 	"testing"
 )
 
-var test_answer int = 4361
+var test_answer1 int = 4361 // 522726
+var test_answer2 int = 467835 // 
 
 func Test_Day_3(t *testing.T) {
 	f, err := os.Open("mock_input.txt")
-	if err != nil{
+	if err != nil {
 		t.Fatalf("file io failed, err: %v", err)
 	}
 	defer f.Close()
 
 	scanner := bufio.NewScanner(f)
 
-	output := day_3.Day_3(scanner)
-	if output != test_answer {
-		t.Errorf("Day(3) fault, want: %v, got: %v", test_answer, output)
+	output1, output2 := day_3.Day_3(scanner)
+	if output1 != test_answer1 {
+		t.Errorf("Day(3) fault 1, want: %v, got: %v", test_answer1, output1)
+	}
+	if output2 != test_answer2 {
+		t.Errorf("Day(3) fault 2, want: %v, got: %v", test_answer2, output2)
 	}
 }
 
@@ -51,40 +55,40 @@ func TestIsSymbolOrPart(t *testing.T) {
 
 }
 
-func TestEvaluatePart(t *testing.T) {
+func TestParsePart(t *testing.T) {
 	testCases := []struct {
 		name            string
 		x               int
 		line            string
-		expectedValue   string
+		expectedValue   int
 		expectedIndices []int
 	}{
-		{"123.", 0, "123.", "123", []int{0, 1, 2}},
-		{".123.", 1, ".123.", "123", []int{1, 2, 3}},
-		{".123$", 1, ".123$", "123", []int{1, 2, 3}},
-		{"..1", 2, "..1", "1", []int{2}},
-		{"..1.1", 2, "..1.1", "1", []int{2}},
-		{"..1..1", 5, "..1..1", "1", []int{5}},
-		{"..1..12", 5, "..1..12", "12", []int{5, 6}},
+		{"123.", 0, "123.", 123, []int{0, 1, 2}},
+		{".123.", 1, ".123.", 123, []int{1, 2, 3}},
+		{".123$", 1, ".123$", 123, []int{1, 2, 3}},
+		{"..1", 2, "..1", 1, []int{2}},
+		{"..1.1", 2, "..1.1", 1, []int{2}},
+		{"..1..1", 5, "..1..1", 1, []int{5}},
+		{"..1..12", 5, "..1..12", 12, []int{5, 6}},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			p := []day_3.Part{}
-			day_3.EvaluatePart(tc.x, 0, tc.line, &p)
+			day_3.ParsePart(tc.x, 0, tc.line, &p)
 			if len(p) == 0 {
-				t.Fatalf("TestEvaluatePart: no part added to list")
+				t.Fatalf("TestParsePart: no part added to list")
 			}
 			if tc.expectedValue != p[0].Value {
-				t.Errorf("TestEvaluatePart: Incorrect response value for line '%v', expected %v, got %v", tc.line, tc.expectedValue, p[0].Value)
+				t.Errorf("TestParsePart: Incorrect response value for line '%v', expected %v, got %v", tc.line, tc.expectedValue, p[0].Value)
 			}
-			if !reflect.DeepEqual(tc.expectedIndices, p[0].Indices){
-				t.Errorf("TestEvaluatePart: Incorrect indices for line '%v', expected %v, got %v", tc.line, tc.expectedIndices, p[0].Indices)
+			if !reflect.DeepEqual(tc.expectedIndices, p[0].Indices) {
+				t.Errorf("TestParsePart: Incorrect indices for line '%v', expected %v, got %v", tc.line, tc.expectedIndices, p[0].Indices)
 			}
 		})
 	}
 }
 
-func TestEvaluateSymbol(t *testing.T) {
+func TestParseSymbol(t *testing.T) {
 	testCases := []struct {
 		name            string
 		x               int
@@ -113,34 +117,36 @@ func TestEvaluateSymbol(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			m := map[int][]int{}
-			day_3.EvaluateSymbol(tc.x, tc.y, &m)
+			s := []day_3.Symbol{}
+			day_3.ParseSymbol(tc.x, tc.y, 'a', &s, &m)
 
 			if !reflect.DeepEqual(tc.expectedIndices, m) {
-				t.Errorf("TestEvaluateSymbol: Incorrect map , expected %v, got %v", tc.expectedIndices, m)
+				t.Errorf("TestParseSymbol: Incorrect map , expected %v, got %v", tc.expectedIndices, m)
 			}
 		})
 	}
 }
 
-func TestParseLine(t *testing.T){
+func TestParseLine(t *testing.T) {
 	t.Run("TestParseLine", func(t *testing.T) {
 		p := []day_3.Part{}
+		s := []day_3.Symbol{}
 		m := map[int][]int{}
-		day_3.ParseLine("..1$.234", 5, &p, &m)
+		day_3.ParseLine("..1$.234", 5, &p, &s, &m)
 		expectedP := []day_3.Part{
-			{Line: 5, Value: "1", Indices: []int{2}},
-			{Line: 5, Value: "234", Indices: []int{5,6,7}},
+			{Line: 5, Value: 1, Indices: []int{2}},
+			{Line: 5, Value: 234, Indices: []int{5, 6, 7}},
 		}
 		expectedM := map[int][]int{
-			4:{2,3,4},
-			5:{2,3,4},
-			6:{2,3,4},
+			4: {2, 3, 4},
+			5: {2, 3, 4},
+			6: {2, 3, 4},
 		}
 
-		if !reflect.DeepEqual(p, expectedP){
+		if !reflect.DeepEqual(p, expectedP) {
 			t.Errorf("Incorrect parts , expected %v, got %v", expectedP, p)
 		}
-		if !reflect.DeepEqual(m, expectedM){
+		if !reflect.DeepEqual(m, expectedM) {
 			t.Errorf("Incorrect map , expected %v, got %v", expectedM, m)
 		}
 	})

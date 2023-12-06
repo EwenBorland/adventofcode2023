@@ -6,9 +6,11 @@ import (
 	"aoc2023/day_3"
 	"aoc2023/day_4"
 	"fmt"
+	"os"
+	"strconv"
 )
 
-const currentDay int = 4
+var activeDay int = 4
 
 var dayFunctions map[int]func() string = map[int]func() string{
 	1: day_1.ParseSolution,
@@ -18,7 +20,15 @@ var dayFunctions map[int]func() string = map[int]func() string{
 }
 
 func main() {
-	fmt.Printf("Running solution for day %v\n", currentDay)
-	result := dayFunctions[currentDay]()
+	if len(os.Args) > 1{
+		argDay, err := strconv.Atoi(os.Args[1])
+		if err != nil{
+			fmt.Println("Argument not recognised")
+		} else {
+			activeDay = argDay
+		}
+	}
+	fmt.Printf("Running solution for day %v\n", activeDay)
+	result := dayFunctions[activeDay]()
 	fmt.Println(result)
 }
