@@ -7,7 +7,8 @@ import (
 	"testing"
 )
 
-var test_answer int = 13
+var test_answer_part_1 int = 13
+var test_answer_part_2 int = 13
 
 func Test_Day_4(t *testing.T) {
 	f, err := os.Open("mock_input.txt")
@@ -18,9 +19,12 @@ func Test_Day_4(t *testing.T) {
 
 	scanner := bufio.NewScanner(f)
 
-	output, _ := day_4.Day_4(scanner)
-	if output != test_answer {
-		t.Errorf("Day_4 fault, want: %v, got: %v", test_answer, output)
+	output_part1, output_part2 := day_4.Day_4(scanner)
+	if output_part1 != test_answer_part_1 {
+		t.Errorf("Day_4 part 1 fault, want: %v, got: %v", test_answer_part_1, output_part1)
+	}
+	if output_part2 != test_answer_part_2 {
+		t.Errorf("Day_4 part 2 fault, want: %v, got: %v", test_answer_part_2, output_part2)
 	}
 }
 

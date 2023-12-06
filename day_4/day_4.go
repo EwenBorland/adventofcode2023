@@ -26,8 +26,12 @@ func ParseSolution() string {
 
 func Day_4(scanner *bufio.Scanner) (int, int) {
 	score := 0
+	cards := 0
+	instanceNums := map[int]int{}
+	lineNum := -1
 
 	for scanner.Scan() {
+		lineNum++
 		line := scanner.Text()
 		// fmt.Println(line)
 		winNums, youNums, err := ParseLine(line)
@@ -44,16 +48,24 @@ func Day_4(scanner *bufio.Scanner) (int, int) {
 			// fmt.Printf("%v is NOT in %v\n",y, winNums)
 		}
 
+		lineScore := 0
 		if winners > 0{
-			lineScore := IntPow(2,winners-1)
+			lineScore = IntPow(2,winners-1)
 			// fmt.Printf("winners: %v, worth %v\n",winners, lineScore)
-			score += lineScore
+			winnersSlice := make([]int, winners)
+			// fmt.Printf("winnersSlice len %v\n",len(winnersSlice))
+			for i := range winnersSlice{
+				// fmt.Printf("Adding %v copies of card %v\n",1*(instanceNums[lineNum]+1),lineNum+1+i)
+				instanceNums[lineNum+1+i] += 1*(instanceNums[lineNum]+1)
+			}
 		}
-
+		// fmt.Printf("scoring %v instances of card %v\n", instanceNums[lineNum]+1, lineNum)
+		score += lineScore*(instanceNums[lineNum]+1)
+		cards += instanceNums[lineNum]+1
 
 	}
 
-	return score, 0
+	return score, cards
 
 }
 
