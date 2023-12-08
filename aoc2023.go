@@ -6,6 +6,7 @@ import (
 	"aoc2023/day_3"
 	"aoc2023/day_4"
 	"aoc2023/day_5"
+	"aoc2023/day_6"
 	"fmt"
 	"os"
 	"strconv"
@@ -19,12 +20,13 @@ var dayFunctions map[int]func() string = map[int]func() string{
 	3: day_3.ParseSolution,
 	4: day_4.ParseSolution,
 	5: day_5.ParseSolution,
+	6: day_6.ParseSolution,
 }
 
 func main() {
-	if len(os.Args) > 1{
+	if len(os.Args) > 1 {
 		argDay, err := strconv.Atoi(os.Args[1])
-		if err != nil{
+		if err != nil {
 			fmt.Println("Argument not recognised")
 		} else {
 			activeDay = argDay
