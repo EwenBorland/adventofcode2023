@@ -7,8 +7,8 @@ import (
 	"testing"
 )
 
-var test_answer_part_1 int = 0
-var test_answer_part_2 int = 0
+var test_answer_part_1 int64 = 46 //35
+var test_answer_part_2 int64 = 0
 
 func Test_Day_5(t *testing.T) {
 	f, err := os.Open("mock_input.txt")
