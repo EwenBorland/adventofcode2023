@@ -28,3 +28,15 @@ func StringToInts(s string) []int {
 	}
 	return intSlice
 }
+
+func StringToInts64(s string) []int64 {
+	intSlice := []int64{}
+	for _, vString := range strings.Split(s, " ") {
+		vInt, err := strconv.ParseInt(vString, 10, 64)
+		if err != nil {
+			continue
+		}
+		intSlice = append(intSlice, vInt)
+	}
+	return intSlice
+}
