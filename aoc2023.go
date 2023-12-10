@@ -7,6 +7,7 @@ import (
 	"aoc2023/day_4"
 	"aoc2023/day_5"
 	"aoc2023/day_6"
+	"aoc2023/day_7"
 	"fmt"
 	"os"
 	"strconv"
@@ -21,6 +22,7 @@ var dayFunctions map[int]func() string = map[int]func() string{
 	4: day_4.ParseSolution,
 	5: day_5.ParseSolution,
 	6: day_6.ParseSolution,
+	7: day_7.ParseSolution,
 }
 
 func main() {

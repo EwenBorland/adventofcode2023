@@ -7,8 +7,8 @@ import (
 	"testing"
 )
 
-var test_answer_part_1 int = 0
-var test_answer_part_2 int = 0
+var test_answer_part_1 int = 6440
+var test_answer_part_2 int = 5905
 
 func Test_day_7(t *testing.T) {
 	f, err := os.Open("mock_input.txt")
@@ -28,20 +28,21 @@ func Test_day_7(t *testing.T) {
 	}
 }
 
-func TestRunExample(t *testing.T) {
+func TestGetCardMap(t *testing.T) {
 	testCases := []struct {
 		name   string
-		input  int
-		output bool
+		input  []int
+		output int
 	}{
-		{"1", 1, false},
-		{"2", 2, true},
+		{"5 of a kind", []int{1,1,1,1,1}, 1},
+		{"4 of a kind:1", []int{1,1,1,1,2}, 2},
+		{"4 of a kind:2", []int{3,1,1,1,1}, 2},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			isEven := tc.input%2 == 0
-			if isEven != tc.output {
-				t.Errorf("TestRunExample: Incorrect response for '%v', got: %v, expected: %v)", tc.name, isEven, tc.output)
+			handType := day_7.GetHandType(tc.input)
+			if handType != tc.output {
+				t.Errorf("TestGetCardMap: Incorrect response for '%v', got: %v, expected: %v)", tc.name, handType, tc.output)
 			}
 		})
 	}
