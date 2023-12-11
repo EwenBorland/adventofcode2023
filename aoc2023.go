@@ -2,6 +2,7 @@ package main
 
 import (
 	"aoc2023/day_1"
+	"aoc2023/day_10"
 	"aoc2023/day_2"
 	"aoc2023/day_3"
 	"aoc2023/day_4"
@@ -18,15 +19,16 @@ import (
 var activeDay int = 4
 
 var dayFunctions map[int]func() string = map[int]func() string{
-	1: day_1.ParseSolution,
-	2: day_2.ParseSolution,
-	3: day_3.ParseSolution,
-	4: day_4.ParseSolution,
-	5: day_5.ParseSolution,
-	6: day_6.ParseSolution,
-	7: day_7.ParseSolution,
-	8: day_8.ParseSolution,
-	9: day_9.ParseSolution,
+	1:  day_1.ParseSolution,
+	2:  day_2.ParseSolution,
+	3:  day_3.ParseSolution,
+	4:  day_4.ParseSolution,
+	5:  day_5.ParseSolution,
+	6:  day_6.ParseSolution,
+	7:  day_7.ParseSolution,
+	8:  day_8.ParseSolution,
+	9:  day_9.ParseSolution,
+	10: day_10.ParseSolution,
 }
 
 func main() {
