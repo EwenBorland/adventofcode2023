@@ -43,10 +43,10 @@ func Day_10(scanner *bufio.Scanner) (int, int) {
 
 	horizLength := len(groundMap[0])
 
-	pipeMap, enclosedMap := [][]bool{}, [][]bool{}
+	pipeMap := [][]bool{}
 	for i:= 0; i < len(groundMap); i++{
 		pipeMap = append(pipeMap, make([]bool, horizLength))
-		enclosedMap = append(enclosedMap, make([]bool, horizLength))
+
 	}
 
 	fmt.Printf("starting at: {%v,%v}\n", startI, startJ)
@@ -56,11 +56,11 @@ func Day_10(scanner *bufio.Scanner) (int, int) {
 	pi, pj := startI, startJ
 	newi, newj := 0, 0
 	totalSteps := 1
-	isOutside := false
+
 	maxSteps := len(groundMap) * len(groundMap[0])
 	for totalSteps <= maxSteps {
 		totalSteps += 1
-		newi, newj = Step(ci, cj, pi, pj, groundMap, pipeMap, enclosedMap, &isOutside)
+		newi, newj = Step(ci, cj, pi, pj, groundMap, pipeMap)
 		// fmt.Printf("Moving from {%v,%v} to {%v,%v}\n", ci, cj, newi, newj)
 		if newi < 0 {
 			break
@@ -71,32 +71,12 @@ func Day_10(scanner *bufio.Scanner) (int, int) {
 
 	fmt.Println(totalSteps, "steps to return to start")
 	fmt.Println(maxSteps, "step limit")
-
+	
 	enclosedCount := 0
-	pipeCount := 0
-	for i, v := range groundMap{
-		for j := range v{
-			if pipeMap[i][j]{
-				pipeCount++
-				continue
-			} 
-			if enclosedMap[i][j] {
-				enclosedCount++
-			}
-		}
-
-
+	for i,v := range groundMap{
+		enclosedCount += CountEnclosed(v, pipeMap[i])
 	}
-	fmt.Println("Pipes: ",pipeCount)
-	fmt.Println("enclosed: ", enclosedCount)
-	fmt.Println("area: ", maxSteps)
 
-	if isOutside {
-		enclosedCount = maxSteps - pipeCount - enclosedCount
-		fmt.Println("enclosed 2 : ", enclosedCount)
-	}
-	//for part two, determine direction, store tiles to right of direction and tile that are in loop.
-	// at end, remove duplicates and loop tiles from the 'right' tiles, the remaining 'righ' tiles are either inside the loop or outside
 	return totalSteps / 2, enclosedCount
 }
 
@@ -112,17 +92,9 @@ func ParseLine(line string) ([]rune, int) {
 	return lineRunes, start
 }
 
-func Step(ci, cj, pi, pj int, groundMap [][]rune, pipeMap , enclosedMap [][]bool, outside *bool) (int, int) {
+func Step(ci, cj, pi, pj int, groundMap [][]rune, pipeMap [][]bool) (int, int) {
 	currentSymbol := groundMap[ci][cj]
-	pipeMap[ci][cj] = true
-
-	enclosedi, enclosedj := ci+cj-pj, cj+pi-ci
-	if enclosedi< 0|| enclosedj < 0 || enclosedi >= len(enclosedMap)|| enclosedj >= len(enclosedMap[0]){
-		*outside = true
-	} else{
-		enclosedMap[ci+cj-pj][cj+pi-ci] = true
-	}
-	
+	pipeMap[ci][cj] = true	
 
 	switch currentSymbol {
 	case '|':
@@ -158,5 +130,55 @@ func StartStep(ci, cj int, groundMap [][]rune) (int, int) {
 	} else {
 		//left
 		return ci, cj - 1
+	}
+}
+
+func CountEnclosed(groundRow []rune,pipeRow []bool) int{
+	enclosed := false
+	enclosedCount := 0
+	previousSymbol := '.'
+	for i, isPipe := range pipeRow{
+		if isPipe{
+			if EnclosedToggle(groundRow[i],&previousSymbol){
+				enclosed= !enclosed
+			}
+		} else {
+			if enclosed{
+				enclosedCount++
+			}
+		}
+	}
+	return enclosedCount
+}
+
+func EnclosedToggle(symbol rune, previousSymbol *rune) bool{
+	switch symbol {
+	case '|':
+		return true
+	case 'L':
+		*previousSymbol = symbol
+		return false
+	case 'J':
+		if *previousSymbol == 'F'{
+			return true 
+		}
+		*previousSymbol = 'J'
+		return false
+	case '7':
+		if *previousSymbol == 'L'{
+			return true 
+		}
+		*previousSymbol = '7'
+		return false
+	case 'F':
+		*previousSymbol = symbol
+		return false
+	case 'S':
+		return true // I'm assuming the starting symbol is a vertical pipe
+	case '-':
+		return false
+	default:
+		fmt.Println("invalid symbol:",symbol)
+		return false
 	}
 }
