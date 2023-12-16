@@ -26,7 +26,7 @@ func ParseSolution() string {
 func Day_6(scanner *bufio.Scanner) (int, int) {
 	scanner.Scan()
 	lineSplit := strings.Split(scanner.Text(), ":")
-	timesP1 := helpers.StringToInts(lineSplit[1])
+	timesP1 := helpers.StringToInts(lineSplit[1], " ")
 	timeP2, err := strconv.ParseInt(strings.ReplaceAll(lineSplit[1], " ", ""),10,64)
 	if err != nil{
 		fmt.Println(err)
@@ -34,7 +34,7 @@ func Day_6(scanner *bufio.Scanner) (int, int) {
 
 	scanner.Scan()
 	lineSplit = strings.Split(scanner.Text(), ":")
-	distancesP1 := helpers.StringToInts(lineSplit[1])
+	distancesP1 := helpers.StringToInts(lineSplit[1], " ")
 	distanceP2, err := strconv.ParseInt(strings.ReplaceAll(lineSplit[1], " ", ""),10,64)
 	if err != nil{
 		fmt.Println(err)

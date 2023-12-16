@@ -17,9 +17,9 @@ func LoadTestScanner(filename string) (*bufio.Scanner, error) {
 	return bufio.NewScanner(f), nil
 }
 
-func StringToInts(s string) []int {
+func StringToInts(s string, sep string) []int {
 	intSlice := []int{}
-	for _, vString := range strings.Split(s, " ") {
+	for _, vString := range strings.Split(s, sep) {
 		vInt, err := strconv.Atoi(vString)
 		if err != nil {
 			continue
